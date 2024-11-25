@@ -10,6 +10,7 @@ import com.tinqin.library.book.api.book.create.CreateBookOutput;
 import com.tinqin.library.book.api.operations.getbook.GetBook;
 import com.tinqin.library.book.api.operations.getbook.GetBookInput;
 import com.tinqin.library.book.api.operations.getbook.GetBookOutput;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public class BookController {
   }
 
   @PostMapping(APIRoutes.API_BOOK)
-    public ResponseEntity<?> createBook(@RequestBody CreateBookInput input) {
+    public ResponseEntity<?> createBook(@Valid @RequestBody CreateBookInput input) {
     CreateBookOutput result = createBook.process(input);
 
     return new ResponseEntity<>(result, HttpStatus.CREATED);
