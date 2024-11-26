@@ -3,6 +3,7 @@ package com.tinqin.library.book.persistence.models;
 
 import jakarta.persistence.*;
 
+import jakarta.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -18,19 +19,10 @@ import org.hibernate.annotations.CreationTimestamp;
 @ToString
 @Getter
 @Entity
+@Builder
 @Table(name = "books")
 public class Book {
 
-  @Builder
-  public Book(String title, Author author, String pages, BigDecimal price) {
-    this.title = title;
-    this.pages = pages;
-    this.price = price;
-    this.author = author;
-
-    this.stock = 0;
-    this.isDeleted = false;
-  }
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
@@ -53,10 +45,10 @@ public class Book {
   private Integer stock;
 
   @CreationTimestamp
-  @Column(name = "createdAd", nullable = false)
+  @Column(name = "created_Ad", nullable = false)
   private LocalDateTime createdAd;
 
-  @Column(name = "isDeleted")
+  @Column(name = "is_deleted")
   private Boolean isDeleted;
 
 
