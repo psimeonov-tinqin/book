@@ -1,5 +1,7 @@
 package com.tinqin.library.book.core.processors.book;
 
+import static com.tinqin.library.book.api.ValidationMessages.AUTHOR_NOT_FOUND;
+
 import com.tinqin.library.book.api.book.create.CreateBook;
 import com.tinqin.library.book.api.book.create.CreateBookInput;
 import com.tinqin.library.book.api.book.create.CreateBookOutput;
@@ -29,21 +31,21 @@ public class CreateBookOperation implements CreateBook {
 
   @Override
   public Either<OperationError, CreateBookOutput> process(CreateBookInput input) {
-
-    return Try.of(() -> result(input))
+    return getAuthor(input)
+        .flatMap(author -> createBook(input, author))
+        .flatMap(this::saveBook)
         .toEither()
         .mapLeft(errorHandler::handle);
   }
 
+  private Try<Author> getAuthor(CreateBookInput input) {
+    return Try.of(() -> UUID.fromString(input.getAuthor()))
+        .flatMap(authorId -> Try.of(() -> authorRepository.findById(authorId)
+            .orElseThrow(() -> new BusinessException(AUTHOR_NOT_FOUND))));
+  }
 
-  public CreateBookOutput result(CreateBookInput input) {
-
-    Author author = authorRepository
-        .findById(UUID.fromString(input.getAuthor()))
-        .orElseThrow(() -> new BusinessException("Author not found"));
-
-    Book book = Book
-        .builder()
+  private Try<Book> createBook(CreateBookInput input, Author author) {
+    return Try.of(() -> Book.builder()
         .title(input.getTitle())
         .author(author)
         .pages(input.getPages())
@@ -51,15 +53,17 @@ public class CreateBookOperation implements CreateBook {
         .createdAd(LocalDateTime.now())
         .stock(0)
         .isDeleted(false)
-        .build();
-
-    Book persisted = bookRepository.save(book);
-
-    return CreateBookOutput
-        .builder()
-        .bookId(persisted.getId())
-        .build();
+        .build());
   }
+
+  private Try<CreateBookOutput> saveBook(Book book) {
+    return Try.of(() -> bookRepository.save(book))
+        .map(savedBook -> CreateBookOutput.builder()
+            .bookId(savedBook.getId())
+            .build());
+  }
+
+
 }
 
 

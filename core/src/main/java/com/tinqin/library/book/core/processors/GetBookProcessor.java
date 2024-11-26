@@ -1,5 +1,7 @@
 package com.tinqin.library.book.core.processors;
 
+import static com.tinqin.library.book.api.ValidationMessages.BOOK_NOT_FOUND;
+
 import com.tinqin.library.book.api.errors.OperationError;
 import com.tinqin.library.book.api.operations.getbook.GetBook;
 import com.tinqin.library.book.api.operations.getbook.GetBookInput;
@@ -12,7 +14,6 @@ import io.vavr.control.Try;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.Errors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,14 +25,15 @@ public class GetBookProcessor implements GetBook {
 
   @Override
   public Either<OperationError, GetBookOutput> process(GetBookInput input) {
-    return Try.of(() -> result(input))
+    return fetchBook(input)
+        .map(this::convertGetBookInputToGetBookOutput)
         .toEither()
         .mapLeft(errorHandler::handle);
   }
 
-  private Book fetchBook(GetBookInput input) {
-    return bookRepository.findById(UUID.fromString(input.getBookId()))
-        .orElseThrow(()-> new RuntimeException("Book not found"));
+  private Try<Book> fetchBook(GetBookInput input) {
+    return Try.of(() -> bookRepository.findById(UUID.fromString(input.getBookId()))
+        .orElseThrow(() -> new RuntimeException(BOOK_NOT_FOUND)));
   }
 
   private GetBookOutput convertGetBookInputToGetBookOutput(Book book) {
@@ -42,8 +44,4 @@ public class GetBookProcessor implements GetBook {
         .build();
   }
 
-  private GetBookOutput result(GetBookInput input) {
-    Book book = fetchBook(input);
-    return convertGetBookInputToGetBookOutput(book);
-  }
 }
