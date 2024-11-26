@@ -9,7 +9,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -19,15 +18,36 @@ public class ErrorHandlerManager implements ErrorHandler {
 
     @PostConstruct
     public void init() {
-        components = applicationContext
+        List<ErrorHandlerComponent> discoveredComponents = applicationContext
                 .getBeansOfType(ErrorHandlerComponent.class)
                 .values()
                 .stream()
                 .toList();
+
+        List<ErrorHandlerComponent> sortComponents = sortComponents(discoveredComponents);
+
+        linkComponents(sortComponents);
+
+        components = sortComponents;
+    }
+
+    private List<ErrorHandlerComponent> sortComponents(List<ErrorHandlerComponent> components) {
+        return components
+                .stream()
+                .sorted(new InternalErrorComparator())
+                .toList();
+    }
+
+    private void linkComponents(List<ErrorHandlerComponent> components) {
+        for (int i = 0; i < components.size() - 1; i++) {
+            components.get(i).setNext(components.get(i + 1));
+        }
     }
 
     @Override
     public OperationError handle(Throwable throwable) {
-        return null;
+        return components
+                .getFirst()
+                .handle(throwable);
     }
 }
