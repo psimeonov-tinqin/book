@@ -23,7 +23,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class CreateBookOperation implements CreateBook {
+public class CreateBookProcessor implements CreateBook {
 
   private final BookRepository bookRepository;
   private final AuthorRepository authorRepository;

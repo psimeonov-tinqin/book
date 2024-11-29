@@ -1,4 +1,4 @@
-package com.tinqin.library.book.api.operations.getbook;
+package com.tinqin.library.book.api.book.getbook;
 
 
 import com.tinqin.library.book.api.base.Processor;
