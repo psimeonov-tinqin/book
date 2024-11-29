@@ -1,5 +1,7 @@
 package com.tinqin.library.book.persistence.seeders;
 
+import com.tinqin.library.book.persistence.filereader.BookModel;
+import com.tinqin.library.book.persistence.filereader.FileReader;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,45 +31,6 @@ public class BookSeeder implements ApplicationRunner {
     @Value("${spring.datasource.password}")
     private String postgresPassword;
 
-
-    @AllArgsConstructor
-    @Builder
-    @Getter
-    private static class BookTemplate {
-        private final String title;
-        private final Integer pages;
-        private final Double price;
-        private final String authorFirstName;
-        private final String authorLastName;
-    }
-
-    private final List<BookTemplate> books = List.of(
-            BookTemplate.builder()
-                    .title("Pod Igoto")
-                    .pages(300)
-                    .price(2.50)
-                    .authorFirstName("Ivan")
-                    .authorLastName("Vazov")
-                    .build(),
-
-            BookTemplate.builder()
-                    .title("Elegiya")
-                    .pages(200)
-                    .price(2.00)
-                    .authorFirstName("Hristo")
-                    .authorLastName("Botev")
-                    .build(),
-
-            BookTemplate.builder()
-                    .title("Elegiya")
-                    .pages(200)
-                    .price(2.00)
-                    .authorFirstName("Hristo2")
-                    .authorLastName("Botev")
-                    .build()
-    );
-
-
     String BOOKS_QUERY = """
             INSERT INTO books (id, created_ad, is_deleted, pages, price, stock, title, author_id)
             VALUES (gen_random_uuid(),
@@ -90,18 +53,25 @@ public class BookSeeder implements ApplicationRunner {
 
         PreparedStatement ps = connection.prepareStatement(BOOKS_QUERY);
 
-        for (BookTemplate book : books) {
-            ps.setInt(1, book.getPages());
-            ps.setDouble(2, book.getPrice());
-            ps.setString(3, book.getTitle());
-            ps.setString(4, book.getAuthorFirstName());
-            ps.setString(5, book.getAuthorLastName());
+        FileReader fileReader = FileReader.loadFile("books.csv", 2);
 
-            ps.addBatch();
-            ps.clearParameters();
+        List<BookModel> batch = fileReader.getBatch();
+
+        while (!batch.isEmpty()) {
+            for (BookModel book : batch) {
+                ps.setInt(1, book.getPages());
+                ps.setDouble(2, book.getPrice());
+                ps.setString(3, book.getTitle());
+                ps.setString(4, book.getAuthorFirstName());
+                ps.setString(5, book.getAuthorLastName());
+
+                ps.addBatch();
+                ps.clearParameters();
+            }
+
+            ps.executeBatch();
+            batch = fileReader.getBatch();
         }
-
-        ps.executeBatch();
     }
 }
 
