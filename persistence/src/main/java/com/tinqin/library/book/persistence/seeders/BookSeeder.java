@@ -1,10 +1,9 @@
 package com.tinqin.library.book.persistence.seeders;
 
-import com.tinqin.library.book.persistence.filereader.BookModel;
-import com.tinqin.library.book.persistence.filereader.FileReader;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import com.tinqin.library.book.persistence.filereaderfactory.FileReaderFactory;
+import com.tinqin.library.book.persistence.filereaderfactory.base.FileReader;
+import com.tinqin.library.book.persistence.filereaderfactory.models.BookModel;
+import com.tinqin.library.book.persistence.filereaderfactory.readers.CsvFileReader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -21,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Order(2)
 public class BookSeeder implements ApplicationRunner {
+    private final FileReaderFactory fileReaderFactory;
 
     @Value("${spring.datasource.url}")
     private String jdbcUrl;
@@ -53,7 +53,8 @@ public class BookSeeder implements ApplicationRunner {
 
         PreparedStatement ps = connection.prepareStatement(BOOKS_QUERY);
 
-        FileReader fileReader = FileReader.loadFile("books.csv", 2);
+//        FileReader fileReader = fileReaderFactory.createCsvFileReader("books.csv", 2);
+        FileReader fileReader = fileReaderFactory.createJsonFileReader("books.json", 2);
 
         List<BookModel> batch = fileReader.getBatch();
 

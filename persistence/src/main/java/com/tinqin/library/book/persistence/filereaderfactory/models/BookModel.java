@@ -1,4 +1,4 @@
-package com.tinqin.library.book.persistence.filereader;
+package com.tinqin.library.book.persistence.filereaderfactory.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
