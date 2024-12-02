@@ -1,5 +1,7 @@
-package com.tinqin.library.book.persistence.filereader;
+package com.tinqin.library.book.persistence.filereaderfactory.readers;
 
+import com.tinqin.library.book.persistence.filereaderfactory.base.FileReader;
+import com.tinqin.library.book.persistence.filereaderfactory.models.BookModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 
@@ -12,27 +14,26 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 @Slf4j
-public class FileReader {
+public class CsvFileReader implements FileReader {
     private final Integer batchSize;
     private final BufferedReader reader;
 
-    private FileReader(Integer batchSize, BufferedReader reader) {
+    public CsvFileReader(String path, Integer batchSize) {
         this.batchSize = batchSize;
-        this.reader = reader;
+        this.reader = initReader(path, batchSize);
     }
 
-    public static FileReader loadFile(String path, Integer batchSize) {
+    private BufferedReader initReader(String path, Integer batchSize) {
         try {
             InputStream pathResource = new ClassPathResource(path).getInputStream();
             InputStreamReader inputStreamReader = new InputStreamReader(pathResource);
-            BufferedReader reader = new BufferedReader(inputStreamReader);
-
-            return new FileReader(batchSize, reader);
+            return new BufferedReader(inputStreamReader);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
+    @Override
     public List<BookModel> getBatch() {
 
         return IntStream
