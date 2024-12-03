@@ -3,7 +3,6 @@ package com.tinqin.library.book.persistence.seeders;
 import com.tinqin.library.book.persistence.filereaderfactory.FileReaderFactory;
 import com.tinqin.library.book.persistence.filereaderfactory.base.FileReader;
 import com.tinqin.library.book.persistence.filereaderfactory.models.BookModel;
-import com.tinqin.library.book.persistence.filereaderfactory.readers.CsvFileReader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.List;
 
 @Component
@@ -50,6 +50,17 @@ public class BookSeeder implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         Connection connection = DriverManager.getConnection(jdbcUrl, postgresUsername, postgresPassword);
+
+        ResultSet resultSet = connection
+                .prepareStatement("SELECT COUNT(*) FROM authors")
+                .executeQuery();
+
+        resultSet.next();
+        Integer bookCount = resultSet.getInt(1);
+
+        if (bookCount > 0) {
+            return;
+        }
 
         PreparedStatement ps = connection.prepareStatement(BOOKS_QUERY);
 
