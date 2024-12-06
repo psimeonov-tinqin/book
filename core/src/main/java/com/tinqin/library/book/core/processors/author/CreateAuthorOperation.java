@@ -44,7 +44,7 @@ public class CreateAuthorOperation implements CreateAuthor {
     UUID recordId = createdRecord.getRecordId();
 
 
-    CreateEventInput createEventInput = createEvent(recordId,"create author");
+    CreateEventInput createEventInput = createEvent(recordId);
     reportingRestClient.createEvent(createEventInput);
 
     return CreateAuthorOutput
@@ -52,11 +52,11 @@ public class CreateAuthorOperation implements CreateAuthor {
         .authorId(persisted.getId())
         .build();
   }
-  private CreateEventInput createEvent(UUID recordId,String eventName) {
+  private CreateEventInput createEvent(UUID recordId) {
     return CreateEventInput
         .builder()
         .recordId(String.valueOf(recordId))
-        .eventName(eventName)
+        .eventName("create author")
         .build();
   }
 
