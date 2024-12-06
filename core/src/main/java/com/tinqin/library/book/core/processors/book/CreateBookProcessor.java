@@ -8,10 +8,13 @@ import com.tinqin.library.book.api.book.create.CreateBookOutput;
 import com.tinqin.library.book.api.errors.OperationError;
 import com.tinqin.library.book.core.errorhandler.base.ErrorHandler;
 import com.tinqin.library.book.core.exceptions.BusinessException;
+import com.tinqin.library.book.domain.ReportingRestClient;
 import com.tinqin.library.book.persistence.models.Author;
 import com.tinqin.library.book.persistence.models.Book;
 import com.tinqin.library.book.persistence.repositories.AuthorRepository;
 import com.tinqin.library.book.persistence.repositories.BookRepository;
+import com.tinqin.library.reporting.operations.createrecord.CreateRecordOutput;
+import com.tinqin.library.reporting.operations.postevent.CreateEventInput;
 import io.vavr.control.Either;
 import io.vavr.control.Try;
 import java.time.LocalDateTime;
@@ -28,6 +31,7 @@ public class CreateBookProcessor implements CreateBook {
   private final BookRepository bookRepository;
   private final AuthorRepository authorRepository;
   private final ErrorHandler errorHandler;
+  private final ReportingRestClient reportingRestClient;
 
   @Override
   public Either<OperationError, CreateBookOutput> process(CreateBookInput input) {
@@ -45,6 +49,12 @@ public class CreateBookProcessor implements CreateBook {
   }
 
   private Try<Book> createBook(CreateBookInput input, Author author) {
+
+    CreateRecordOutput createdRecord = createRecord();
+    UUID recordId = createdRecord.getRecordId();
+    CreateEventInput createEventInput = createEvent(recordId);
+    reportingRestClient.createEvent(createEventInput);
+
     return Try.of(() -> Book.builder()
         .title(input.getTitle())
         .author(author)
@@ -63,6 +73,17 @@ public class CreateBookProcessor implements CreateBook {
             .build());
   }
 
+  private CreateRecordOutput createRecord() {
+    return reportingRestClient.createRecord().getBody();
+  }
+
+  private CreateEventInput createEvent(UUID recordId) {
+    return CreateEventInput
+        .builder()
+        .recordId(String.valueOf(recordId))
+        .eventName("create book")
+        .build();
+  }
 
 }
 
