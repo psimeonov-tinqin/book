@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.tinqin.library.book</groupId>
     <artifactId>book</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${revision}</version>
   </parent>
 
   <artifactId>restexport</artifactId>
@@ -15,7 +15,7 @@
     <dependency>
       <groupId>com.tinqin.library.book</groupId>
       <artifactId>api</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>${revision}</version>
     </dependency>
   </dependencies>
 </project>
