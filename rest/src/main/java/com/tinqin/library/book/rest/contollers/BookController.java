@@ -11,6 +11,7 @@ import com.tinqin.library.book.api.book.getbooksbyauthor.GetBookByAuthor;
 import com.tinqin.library.book.api.book.getbooksbyauthor.GetBookByAuthorInput;
 import com.tinqin.library.book.api.book.getbooksbyauthor.GetBookByAuthorOutput;
 import com.tinqin.library.book.api.errors.OperationError;
+import com.tinqin.library.book.rest.models.LocaleHeader;
 import io.vavr.control.Either;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,14 +28,16 @@ public class BookController extends BaseController {
     private final GetBook getBook;
     private final CreateBook createBook;
     private final GetBookByAuthor getBookByAuthor;
+    private final LocaleHeader localeHeader;
 
     @GetMapping(APIRoutes.GET_BOOK)
-    public ResponseEntity<?> getBook(@PathVariable("bookId") String bookId) {
-
+    public ResponseEntity<?> getBook(@PathVariable("bookId") String bookId,
+                                     @RequestHeader(value = "locale", required = false) String locale) {
 
         GetBookInput input = GetBookInput
                 .builder()
                 .bookId(bookId)
+                .locale(localeHeader.getLocale())
                 .build();
 
         Either<OperationError, GetBookOutput> result = getBook.process(input);
