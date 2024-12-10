@@ -10,4 +10,18 @@
 
     <artifactId>domain</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.tinqin.library.reporting</groupId>
+            <artifactId>restexport</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-jackson</artifactId>
+            <version>13.3</version>
+        </dependency>
+    </dependencies>
+
 </project>

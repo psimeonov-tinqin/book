@@ -11,6 +11,7 @@ import com.tinqin.library.book.api.book.getbooksbyauthor.GetBookByAuthor;
 import com.tinqin.library.book.api.book.getbooksbyauthor.GetBookByAuthorInput;
 import com.tinqin.library.book.api.book.getbooksbyauthor.GetBookByAuthorOutput;
 import com.tinqin.library.book.api.errors.OperationError;
+import com.tinqin.library.book.domain.ReportingClient;
 import com.tinqin.library.book.rest.models.LocaleHeader;
 import io.vavr.control.Either;
 import jakarta.validation.Valid;
