@@ -11,10 +11,12 @@ import com.tinqin.library.book.core.exceptions.BusinessException;
 import com.tinqin.library.book.domain.ReportingClient;
 import com.tinqin.library.book.persistence.models.Book;
 import com.tinqin.library.book.persistence.repositories.BookRepository;
+import com.tinqin.library.reporting.api.operations.createrecord.CreateRecordOutput;
 import io.vavr.control.Either;
 import io.vavr.control.Try;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +30,8 @@ public class GetBookProcessor implements GetBook {
 
   @Override
   public Either<OperationError, GetBookOutput> process(GetBookInput input) {
-    reportingClient.createRecord();
+    ResponseEntity<CreateRecordOutput> record = reportingClient.createRecord();
+    HttpStatusCode statusCode = record.getStatusCode();
 
     return fetchBook(input)
         .map(this::convertGetBookInputToGetBookOutput)

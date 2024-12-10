@@ -3,6 +3,6 @@ package com.tinqin.library.book.domain;
 import com.tinqin.library.reporting.restexport.ReportingRestExport;
 import org.springframework.cloud.openfeign.FeignClient;
 
-@FeignClient(name = "reporting", url = "${reporting.url}",configuration = ReportingClientConfiguration.class)
+@FeignClient(name = "reportingClient", url = "${reporting.url}", configuration = ReportingClientConfiguration.class)
 public interface ReportingClient extends ReportingRestExport {
 }

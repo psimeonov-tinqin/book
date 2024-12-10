@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication(scanBasePackages = "com.tinqin.library.book")
 @EntityScan(basePackages = "com.tinqin.library.book.persistence.models")
 @EnableJpaRepositories(basePackages = "com.tinqin.library.book.persistence.repositories")
-@EnableFeignClients
+@EnableFeignClients(basePackages = "com.tinqin.library.book.domain")
 public class BookApplication {
 
     public static void main(String[] args) {
