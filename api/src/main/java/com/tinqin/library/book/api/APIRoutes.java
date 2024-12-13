@@ -10,4 +10,8 @@ public class APIRoutes {
 
   public static final String API_USER = API + "/user";
   public static final String BLOCK_USER = API_USER + "/{userId}";
+
+    public static final String AUTH = API + "/auth";
+    public static final String LOGIN = AUTH + "/login";
+    public static final String REGISTER = AUTH + "/register";
 }
