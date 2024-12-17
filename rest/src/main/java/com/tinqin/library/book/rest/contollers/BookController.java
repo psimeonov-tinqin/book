@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -31,6 +32,7 @@ public class BookController extends BaseController {
     private final GetBookByAuthor getBookByAuthor;
     private final LocaleHeader localeHeader;
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping(APIRoutes.GET_BOOK)
     public ResponseEntity<?> getBook(@PathVariable("bookId") String bookId,
                                      @RequestHeader(value = "locale", required = false) String locale) {
