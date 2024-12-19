@@ -10,8 +10,10 @@ import com.tinqin.library.book.api.book.getbook.GetBookOutput;
 import com.tinqin.library.book.api.book.getbooksbyauthor.GetBookByAuthor;
 import com.tinqin.library.book.api.book.getbooksbyauthor.GetBookByAuthorInput;
 import com.tinqin.library.book.api.book.getbooksbyauthor.GetBookByAuthorOutput;
+import com.tinqin.library.book.api.book.partialedit.PartialEditBook;
+import com.tinqin.library.book.api.book.partialedit.PartialEditBookInput;
+import com.tinqin.library.book.api.book.partialedit.PartialEditBookOutput;
 import com.tinqin.library.book.api.errors.OperationError;
-import com.tinqin.library.book.domain.ReportingClient;
 import com.tinqin.library.book.rest.models.LocaleHeader;
 import io.vavr.control.Either;
 import jakarta.validation.Valid;
@@ -29,6 +31,8 @@ public class BookController extends BaseController {
     private final GetBook getBook;
     private final CreateBook createBook;
     private final GetBookByAuthor getBookByAuthor;
+    private final PartialEditBook partialEditBook;
+
     private final LocaleHeader localeHeader;
 
     @GetMapping(APIRoutes.GET_BOOK)
@@ -65,6 +69,20 @@ public class BookController extends BaseController {
                 .build();
 
         Either<OperationError, GetBookByAuthorOutput> process = getBookByAuthor.process(input);
+
+        return mapToResponseEntity(process, HttpStatus.OK);
+    }
+
+    @PatchMapping(APIRoutes.GET_BOOK)
+    public ResponseEntity<?> partialEditBook(@PathVariable("bookId") String bookId,
+                                             @RequestBody PartialEditBookInput request) {
+
+        PartialEditBookInput input = request
+                .toBuilder()
+                .bookId(bookId)
+                .build();
+
+        Either<OperationError, PartialEditBookOutput> process = partialEditBook.process(input);
 
         return mapToResponseEntity(process, HttpStatus.OK);
     }
