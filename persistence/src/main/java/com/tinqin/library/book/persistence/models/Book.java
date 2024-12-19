@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,6 +21,7 @@ import org.hibernate.annotations.CreationTimestamp;
 @Entity
 @Builder
 @Table(name = "books")
+@DynamicUpdate
 public class Book {
 
 
