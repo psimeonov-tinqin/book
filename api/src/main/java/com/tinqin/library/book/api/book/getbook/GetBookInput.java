@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.UUID;
 
 import static com.tinqin.library.book.api.ValidationMessages.CLIENT_ID_CANNOT_BE_NULL;
@@ -23,5 +24,4 @@ public class GetBookInput implements ProcessorInput {
     private String bookId;
 
     private String locale;
-
 }
