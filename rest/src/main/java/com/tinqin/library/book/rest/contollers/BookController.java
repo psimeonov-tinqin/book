@@ -14,7 +14,9 @@ import com.tinqin.library.book.api.book.partialedit.PartialEditBook;
 import com.tinqin.library.book.api.book.partialedit.PartialEditBookInput;
 import com.tinqin.library.book.api.book.partialedit.PartialEditBookOutput;
 import com.tinqin.library.book.api.errors.OperationError;
+import com.tinqin.library.book.documentationexporter.annotation.DocumentedApi;
 import com.tinqin.library.book.rest.models.LocaleHeader;
+import io.swagger.v3.oas.annotations.Operation;
 import io.vavr.control.Either;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +37,8 @@ public class BookController extends BaseController {
 
     private final LocaleHeader localeHeader;
 
+    @DocumentedApi(classType = GetBookOutput.class)
+    @Operation(summary = "Get book by id and provide the book details. Requires bookId as a path variable. Locale is supported as a header but not required.")
     @GetMapping(APIRoutes.GET_BOOK)
     public ResponseEntity<?> getBook(@PathVariable("bookId") String bookId,
                                      @RequestHeader(value = "locale", required = false) String locale) {
