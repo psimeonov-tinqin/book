@@ -24,7 +24,7 @@ public class Formatter {
                         .toString()
                         .split("\\."))
                 .reduce((first, second) -> second)
-                .map(returns -> returns.replace("?", methodData.getReturnTypeClass().getName()))
+                .map(returns -> returns.replace("?", methodData.getReturnTypeClass()))
                 .orElse(methodData.getReturnType().toString());
 
         String methodName = methodData.getMethodName();

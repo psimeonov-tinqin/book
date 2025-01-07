@@ -20,7 +20,7 @@ public class MethodData {
     @Builder.Default
     private final Set<Modifier> modifiers = Collections.emptySet();
     private final TypeMirror returnType;
-    private final Class<?> returnTypeClass;
+    private final String returnTypeClass;
     private final String methodName;
     @Builder.Default
     private final List<? extends VariableElement> parameters = Collections.emptyList();

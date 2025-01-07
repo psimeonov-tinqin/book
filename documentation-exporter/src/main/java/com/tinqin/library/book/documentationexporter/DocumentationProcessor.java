@@ -13,8 +13,8 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.element.*;
 import javax.lang.model.type.TypeMirror;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @SupportedAnnotationTypes("com.tinqin.library.book.documentationexporter.annotation.DocumentedApi")
@@ -30,7 +30,7 @@ public class DocumentationProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 
-        if(annotations.isEmpty()) {
+        if (annotations.isEmpty()) {
             return true;
         }
 
@@ -58,19 +58,30 @@ public class DocumentationProcessor extends AbstractProcessor {
         TypeMirror returnType = ((ExecutableElement) element).getReturnType();
         List<? extends VariableElement> parameters = ((ExecutableElement) element).getParameters();
 
-//        element
-//                .getAnnotationMirrors()
-//                .stream()
-//                .map(mirror -> mirror.getAnnotationType().toString())
-//                .filter(annotationName -> annotationName.equalsIgnoreCase(DocumentedApi.class.getName()))
-//
-//        AnnotationValue annotationValue = element.getAnnotationMirrors().get(0).getElementValues().get("classType()");
+        AnnotationMirror annotationMirror = element
+                .getAnnotationMirrors()
+                .stream()
+                .filter(mirror -> mirror.getAnnotationType().toString().equalsIgnoreCase(DocumentedApi.class.getName()))
+                .findFirst()
+                .orElseThrow();
+
+        String genericClass = annotationMirror
+                .getElementValues()
+                .entrySet()
+                .stream()
+                .map(entry -> Map.entry(entry.getKey().toString(), entry.getValue().toString()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
+                .getOrDefault("classType()", "");
+
+        List<String> genericClassElements = Arrays.asList(genericClass.split("\\."));
+
+        String genericClassName = genericClassElements.get(genericClassElements.size() - 2);
 
         return MethodData
                 .builder()
                 .modifiers(modifiers)
                 .returnType(returnType)
-                .returnTypeClass(element.getAnnotationsByType(DocumentedApi.class)[0].getClass()) // TODO: Fix this to get value from proxy
+                .returnTypeClass(genericClassName)
                 .methodName(methodName)
                 .parameters(parameters)
                 .methodInfo(element.getAnnotation(Operation.class))
