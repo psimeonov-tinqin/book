@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @Order(2)
+@Profile("!test")
 public class BookSeeder implements ApplicationRunner {
     private final FileReaderFactory fileReaderFactory;
 

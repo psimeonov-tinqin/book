@@ -3,6 +3,7 @@ package com.tinqin.library.book.persistence.seeders;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 @Order(1)
+@Profile("!test")
 public class AuthorSeeder implements ApplicationRunner {
     private final JdbcTemplate jdbcTemplate;
 
